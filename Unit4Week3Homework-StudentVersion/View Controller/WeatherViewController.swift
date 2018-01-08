@@ -66,7 +66,6 @@ class WeatherViewController: UIViewController {
         StackViewConstraints()
         collectionViewConstraints()
         zipCodeTextFieldConstraints()
-        
     }
 
     func subView(){
@@ -176,5 +175,12 @@ extension WeatherViewController: UICollectionViewDataSource {
         }
         return UICollectionViewCell()
     }
+}
+extension WeatherViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailVC = DetailedWeatherViewController()
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
 }
 

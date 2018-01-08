@@ -20,6 +20,7 @@
 		81D6FDBB2003D8B6003D78E4 /* WeatherAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D6FDBA2003D8B6003D78E4 /* WeatherAPIClient.swift */; };
 		81D6FDBD2003E762003D78E4 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D6FDBC2003E762003D78E4 /* FavoriteViewController.swift */; };
 		81D6FDDD200423A5003D78E4 /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D6FDDC200423A5003D78E4 /* WeatherCell.swift */; };
+		81D6FDDF20043022003D78E4 /* DetailedWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D6FDDE20043022003D78E4 /* DetailedWeatherViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		81D6FDBA2003D8B6003D78E4 /* WeatherAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAPIClient.swift; sourceTree = "<group>"; };
 		81D6FDBC2003E762003D78E4 /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		81D6FDDC200423A5003D78E4 /* WeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
+		81D6FDDE20043022003D78E4 /* DetailedWeatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedWeatherViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				5410A6C21FFFDF1200935A9A /* WeatherViewController.swift */,
+				81D6FDDE20043022003D78E4 /* DetailedWeatherViewController.swift */,
 				81D6FDBC2003E762003D78E4 /* FavoriteViewController.swift */,
 			);
 			path = "View Controller";
@@ -208,6 +211,7 @@
 				5410A6C31FFFDF1200935A9A /* WeatherViewController.swift in Sources */,
 				81D6FDB92003D858003D78E4 /* AppError.swift in Sources */,
 				81D588A22001D14300C24EFE /* JSONParsingService.swift in Sources */,
+				81D6FDDF20043022003D78E4 /* DetailedWeatherViewController.swift in Sources */,
 				81D588A62001D1FB00C24EFE /* Weather.swift in Sources */,
 				5410A6C11FFFDF1200935A9A /* AppDelegate.swift in Sources */,
 			);
