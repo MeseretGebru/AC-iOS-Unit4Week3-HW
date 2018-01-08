@@ -15,7 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let tabViewController = UITabBarController()
+        let weatherVC = WeatherViewController()
+        let NavController = UINavigationController(rootViewController: weatherVC)
+        
+        let favoriteVC = FavoriteViewController()
+        weatherVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
+        favoriteVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
+        
+        // adding view controllers into TabView controller
+        tabViewController.setViewControllers([NavController,favoriteVC], animated: true)
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = tabViewController
+        window?.makeKeyAndVisible()
         return true
     }
 
