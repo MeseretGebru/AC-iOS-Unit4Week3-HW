@@ -12,12 +12,21 @@ class WeatherViewController: UIViewController {
     
     let cellSpacing: CGFloat = 5.0
     
+    var weatherArr = [Weather]() {
+        didSet{
+            collectionview.reloadData()
+        }
+    }
+    
+    var cityName = ""
+    
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Weather Forcast for: "
         label.textAlignment = .center
         return label
     }()
+    
 
     
     lazy var rootStackView: UIStackView = {
@@ -33,7 +42,7 @@ class WeatherViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
-        collectionView.backgroundColor = .yellow
+        //collectionView.backgroundColor = .gray
         collectionView.register(WeatherCell.self, forCellWithReuseIdentifier: "WeatherCell")
         return collectionView
     }()
@@ -49,7 +58,7 @@ class WeatherViewController: UIViewController {
     lazy var enterZipCodeLabel: UILabel = {
         let label = UILabel()
         label.text = "Enter Zip Code"
-        label.backgroundColor = .green
+//        label.backgroundColor = .green
         label.textAlignment = .center
         return label
     }()
@@ -59,13 +68,19 @@ class WeatherViewController: UIViewController {
         self.zipCodeTextField.delegate = self
         self.collectionview.delegate = self
         self.collectionview.dataSource = self
-        view.backgroundColor = .orange
+        view.backgroundColor = .white
         navigationItem.title = "Search"
+        if let zipCode = UserDefaultsHelper.manager.getLastSearch() {
+            getWeatherFromOnline(from: zipCode)
+        }
+        
+        
         subView()
         displaySubview()
-        StackViewConstraints()
+        stackViewConstraints()
         collectionViewConstraints()
         zipCodeTextFieldConstraints()
+        
     }
 
     func subView(){
@@ -84,7 +99,7 @@ class WeatherViewController: UIViewController {
         enterZipCodeLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func StackViewConstraints(){
+    func stackViewConstraints(){
         rootStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         rootStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         rootStackView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
@@ -107,7 +122,8 @@ extension WeatherViewController: UITextFieldDelegate {
         guard let text = textField.text else {
             return true
         }
-        let counter = text.count + string.count
+        
+        let counter = text.count + string.count - range.length
         if validNumbers.contains(string) && counter <= 5 {
             return true
         }
@@ -115,7 +131,10 @@ extension WeatherViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        //TODO:-
+        if let zipcode = textField.text {
+            getWeatherFromOnline(from: zipcode)
+            UserDefaultsHelper.manager.save(name: zipcode)
+        }
         return true
         
     }
@@ -147,40 +166,55 @@ extension WeatherViewController: UICollectionViewDelegateFlowLayout {
 
 extension WeatherViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7 // self.weatherDays.count
+        return weatherArr.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-       // let weather = self.weatherDays[indexPath.row]
-//        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as? WeatherCVCell {
-//            let dateFormatterGet = ISO8601DateFormatter()
-//            let dateFormatterPrint = DateFormatter()
-//            dateFormatterPrint.dateFormat = "EEEE, d"
-//            let date = dateFormatterGet.date(from: weather.dateTimeISO)
-//            var stringFromDate = dateFormatterPrint.string(from: date!)
-//            if stringFromDate == dateFormatterPrint.string(from: Date()) {
-//                stringFromDate = "Today"
-//            }
-//            cell.dateLabel.text = "\(stringFromDate)"
-//            cell.weatherImageView.image = UIImage(named: weather.icon)
-//            cell.highLabel.text = "High: \(weather.maxTempF)ºF"
-//            cell.lowLabel.text = "Low: \(weather.minTempF)ºF"
-//            return cell
-//        }
-        //return UICollectionViewCell()
+       
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherCell", for: indexPath) as? WeatherCell {
-        cell.backgroundColor = .orange
-         cell.dateLabel.text = "\(Date())"
-        return cell
+            let weather = weatherArr[indexPath.row]
+            cell.backgroundColor = .white
+            cell.layer.cornerRadius = 10
+            //"yyyy-MM-dd"
+            //"EEE d, yyyy"
+            //"EEE d, MMM"
+            cell.dateLabel.text = "\(getStringDate(ISODate: weather.dateTimeISO, formart: "EEE d, MM"))"
+            cell.weatherImageView.image = UIImage(named: weather.icon)
+            cell.lowLabel.text = "low: \(weather.minTempF)"
+            cell.highLabel.text = "High: \(weather.maxTempF)"
+            return cell
         }
         return UICollectionViewCell()
     }
 }
 extension WeatherViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let weather = weatherArr[indexPath.row]
         let detailVC = DetailedWeatherViewController()
+        detailVC.myWeather = weather
+        detailVC.cityName = self.cityName
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
+}
+
+//MARK:- Functions
+extension WeatherViewController {
+    func getWeatherFromOnline(from zipcode: String) {
+        let url = "https://api.aerisapi.com/forecasts/\(zipcode)?"
+        WeatherAPIClient.manager.getWeather(from: url, completionHandler: {self.weatherArr = $0}, errorHandler: {print($0)})
+        ZipCodeHelper.manager.getLocationName(from: zipcode, completionHandler: {self.titleLabel.text = "Weather Forcast for: \($0)"; self.cityName = $0}, errorHandler: {print($0)})
+    }
+    
+    func getStringDate(ISODate: String, formart: String) -> String {
+        let dateISO = ISO8601DateFormatter()
+        let dateFormatted = DateFormatter()
+        dateFormatted.dateFormat = formart
+        if let dateFromWeather = dateISO.date(from: ISODate) {
+            let dateToCell = dateFormatted.string(from: dateFromWeather)
+            return dateToCell
+        }
+        return "No Date"
+    }
 }
 

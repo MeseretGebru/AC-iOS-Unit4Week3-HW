@@ -31,3 +31,17 @@ struct Weather: Codable {
     let sunriseISO: String
     let sunsetISO: String
 }
+
+
+struct AllPictures: Codable {
+    let hits: [Pictures]
+}
+
+struct Pictures: Codable {
+    let webformatURL: String
+}
+
+struct Favorite: Codable {
+    var cityName: String?
+    let pictureName: String?
+}

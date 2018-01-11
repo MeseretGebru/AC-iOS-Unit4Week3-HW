@@ -12,10 +12,28 @@ class WeatherCell: UICollectionViewCell {
     
     lazy var dateLabel: UILabel = {
       let label = UILabel()
-        
         label.textAlignment = .center
         return label
     }()
+    
+    lazy var weatherImageView: UIImageView = {
+        let imageV = UIImageView()
+        imageV.contentMode = .scaleAspectFit
+        return imageV
+    }()
+    
+    lazy var lowLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    lazy var highLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,7 +42,7 @@ class WeatherCell: UICollectionViewCell {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder) // fatalError("init from code not implemented")
         commoninit()
     }
     
@@ -35,16 +53,32 @@ class WeatherCell: UICollectionViewCell {
     }
     
     func addSubViews() {
+        
         addSubview(dateLabel)
+        addSubview(weatherImageView)
+        addSubview(lowLabel)
+        addSubview(highLabel)
     }
     
     func displaySubViews() {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        weatherImageView.translatesAutoresizingMaskIntoConstraints = false
+        lowLabel.translatesAutoresizingMaskIntoConstraints = false
+        highLabel.translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
     func subViewConstraints() {
         dateLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         dateLabel.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        weatherImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 8).isActive = true
+        weatherImageView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        weatherImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.6).isActive = true
+        weatherImageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        highLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor, constant: 8).isActive = true
+        highLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        lowLabel.topAnchor.constraint(equalTo: highLabel.bottomAnchor, constant: 8).isActive = true
+        lowLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         
     }
 }

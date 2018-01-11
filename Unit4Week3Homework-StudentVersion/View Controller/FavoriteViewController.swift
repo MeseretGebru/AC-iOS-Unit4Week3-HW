@@ -8,28 +8,35 @@
 
 import UIKit
 
-class FavoriteViewController: UIViewController {
+class FavoriteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+   
+        lazy var tableView: UITableView = {
+            let tv = UITableView(frame: UIScreen.main.bounds)
+         // bounds here is the MainView's bounds which is UIScreen.main.bounds (entire screen)
+            //tv.register(PictureTableViewCell.self, forCellReuseIdentifier: "PictureCell")
+            return tv
+        }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = .yellow
+        
         self.view.backgroundColor = .blue
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        tableView.dataSource = self
+        tableView.delegate = self
+    
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints =  false
+        
+    
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
-    */
-
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
 }
