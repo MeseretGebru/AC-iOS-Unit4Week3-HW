@@ -42,7 +42,6 @@ class WeatherViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
-        //collectionView.backgroundColor = .gray
         collectionView.register(WeatherCell.self, forCellWithReuseIdentifier: "WeatherCell")
         return collectionView
     }()
@@ -58,7 +57,6 @@ class WeatherViewController: UIViewController {
     lazy var enterZipCodeLabel: UILabel = {
         let label = UILabel()
         label.text = "Enter Zip Code"
-//        label.backgroundColor = .green
         label.textAlignment = .center
         return label
     }()
@@ -68,7 +66,9 @@ class WeatherViewController: UIViewController {
         self.zipCodeTextField.delegate = self
         self.collectionview.delegate = self
         self.collectionview.dataSource = self
+        
         view.backgroundColor = .white
+        collectionview.backgroundColor = .white
         navigationItem.title = "Search"
         if let zipCode = UserDefaultsHelper.manager.getLastSearch() {
             getWeatherFromOnline(from: zipCode)
@@ -92,6 +92,7 @@ class WeatherViewController: UIViewController {
     }
     
     func displaySubview() {
+        
         rootStackView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         collectionview.translatesAutoresizingMaskIntoConstraints = false
@@ -178,9 +179,9 @@ extension WeatherViewController: UICollectionViewDataSource {
             //"yyyy-MM-dd"
             //"EEE d, yyyy"
             //"EEE d, MMM"
-            cell.dateLabel.text = "\(getStringDate(ISODate: weather.dateTimeISO, formart: "EEE d, MM"))"
+            cell.dateLabel.text = "\(getStringDate(ISODate: weather.dateTimeISO, formart: "yyyy-MM-dd"))"
             cell.weatherImageView.image = UIImage(named: weather.icon)
-            cell.lowLabel.text = "low: \(weather.minTempF)"
+            cell.lowLabel.text = "Low: \(weather.minTempF)"
             cell.highLabel.text = "High: \(weather.maxTempF)"
             return cell
         }
@@ -206,7 +207,7 @@ extension WeatherViewController {
         ZipCodeHelper.manager.getLocationName(from: zipcode, completionHandler: {self.titleLabel.text = "Weather Forcast for: \($0)"; self.cityName = $0}, errorHandler: {print($0)})
     }
     
-    func getStringDate(ISODate: String, formart: String) -> String {
+     func getStringDate(ISODate: String, formart: String) -> String {
         let dateISO = ISO8601DateFormatter()
         let dateFormatted = DateFormatter()
         dateFormatted.dateFormat = formart

@@ -42,7 +42,7 @@ class WeatherCell: UICollectionViewCell {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder) // fatalError("init from code not implemented")
+        super.init(coder: aDecoder) // also it can be fatalError("init from code not implemented")
         commoninit()
     }
     

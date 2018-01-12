@@ -87,7 +87,7 @@ class DetailedWeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .green
+        view.backgroundColor = .white
         subView()
         displaySubview()
         navigationItem.title = "Forecast"
@@ -105,10 +105,22 @@ class DetailedWeatherViewController: UIViewController {
         weatherDisplayLabel.text = myWeather.weather
         highLabel.text = "Hight: \(myWeather.maxTempF) F"
         lowLabel.text = "Low: \(myWeather.minTempF )"
-        sunRiseLabel.text = "Sunrise: \(myWeather.sunriseISO)"
-        sunSetLabel.text = "Sunset: \(myWeather.sunsetISO)"
-        windSpeedLabel.text = "Windspeed: \(myWeather.windSpeedMPH)"
-        precipationLabel.text = "Precipitation: \(myWeather.pressureIN)"
+        let sunRise = getStringDate(ISODate: myWeather.sunriseISO, formart: "HH:mm")
+        sunRiseLabel.text = "Sunrise: \(sunRise)"
+        let sunSet = getStringDate(ISODate: myWeather.sunsetISO, formart: "HH:mm")
+        sunSetLabel.text = "Sunset: \(sunSet)"
+        windSpeedLabel.text = "Windspeed: \(myWeather.windSpeedMPH) MPH"
+        precipationLabel.text = "Inches of Precipitation: \(myWeather.pressureIN)"
+    }
+    func getStringDate(ISODate: String, formart: String) -> String {
+        let dateISO = ISO8601DateFormatter()
+        let dateFormatted = DateFormatter()
+        dateFormatted.dateFormat = formart
+        if let dateFromWeather = dateISO.date(from: ISODate) {
+            let dateToCell = dateFormatted.string(from: dateFromWeather)
+            return dateToCell
+        }
+        return "No Date"
     }
     
     func loadPicture(){
@@ -123,6 +135,7 @@ class DetailedWeatherViewController: UIViewController {
     
     @objc func saveToFavorite(){
         FileManagerHelper.manager.addNew(newPicture: self.newPict)
+        FileManagerHelper.manager.saveImage(with: newPict.cityName, image: detailImageView.image!)
         let message = UIAlertController(title: "Saved", message:"Image Saved to Favorite", preferredStyle: .alert)
         message.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.cancel, handler: nil))
         present(message, animated: true, completion: {self.navigationItem.rightBarButtonItem?.isEnabled = false})
@@ -163,21 +176,14 @@ class DetailedWeatherViewController: UIViewController {
         detailImageView.topAnchor.constraint(equalTo: weatherForcasttitleLabel.bottomAnchor, constant: 20).isActive = true
         detailImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         detailImageView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        detailImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.33).isActive = true
+        detailImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.50).isActive = true
         
         weatherDisplayLabel.topAnchor.constraint(equalTo: detailImageView.bottomAnchor, constant: 8).isActive = true
         weatherDisplayLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         weatherDisplayLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
-        stackView.topAnchor.constraint(equalTo: weatherDisplayLabel.bottomAnchor, constant: 16).isActive = true
-        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.33).isActive = true
+        stackView.topAnchor.constraint(equalTo: weatherDisplayLabel.bottomAnchor, constant: 30).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.66).isActive = true
         stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-       
-        
-        
-        
-        
     }
-    
-    
 }

@@ -9,34 +9,48 @@
 import UIKit
 
 class FavoriteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
+    var myFavPictures = [Favorite](){
+        didSet {
+            tableView.reloadData()
+        }
+    }
    
         lazy var tableView: UITableView = {
             let tv = UITableView(frame: UIScreen.main.bounds)
          // bounds here is the MainView's bounds which is UIScreen.main.bounds (entire screen)
-            //tv.register(PictureTableViewCell.self, forCellReuseIdentifier: "PictureCell")
+            tv.register(PictureTableViewCell.self, forCellReuseIdentifier: "PictureCell")
             return tv
         }()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = .yellow
+        tableView.backgroundColor = .white
         
         self.view.backgroundColor = .blue
         tableView.dataSource = self
         tableView.delegate = self
     
         view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints =  false
         
-    
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        myFavPictures = FileManagerHelper.manager.getAllPictures()
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return myFavPictures.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PictureCell", for: indexPath) as! PictureTableViewCell
+        let selectedPicture = myFavPictures[indexPath.row]
+        cell.cityImage.image = FileManagerHelper.manager.getImage(with: selectedPicture.cityName)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UIScreen.main.bounds.height / 2
     }
 }

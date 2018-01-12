@@ -14,9 +14,9 @@ class FileManagerHelper {
     static let manager = FileManagerHelper()
     
     //Saving Images To Disk
-    func saveImage(with urlStr: String, image: UIImage) {
+    func saveImage(with locationName: String, image: UIImage) {
         let imageData = UIImagePNGRepresentation(image)
-        let imagePathName = urlStr.components(separatedBy: "/").last!
+        let imagePathName = locationName
         let url = dataFilePath(withPathName: imagePathName)
         do {
             try imageData?.write(to: url)
@@ -26,9 +26,9 @@ class FileManagerHelper {
         }
     }
     
-    func getImage(with urlStr: String) -> UIImage? {
+    func getImage(with locationName: String) -> UIImage? {
         do {
-            let imagePathName = urlStr.components(separatedBy: "/").last!
+            let imagePathName = locationName
             let url = dataFilePath(withPathName: imagePathName)
             let data = try Data(contentsOf: url)
             return UIImage(data: data)
@@ -44,7 +44,7 @@ class FileManagerHelper {
         didSet {
 
             removeDupes()
-            saveImages()
+            saveImageInfo()
         }
     }
     
@@ -52,7 +52,7 @@ class FileManagerHelper {
         var imageURLSet = Set<String>()
         var noDupeArr = [Favorite]()
         for image in pictureArr {
-            let (inserted, _) = imageURLSet.insert(image.pictureName!)
+            let (inserted, _) = imageURLSet.insert(image.pictureName)
             if inserted {
                 noDupeArr.append(image)
             }
@@ -68,7 +68,7 @@ class FileManagerHelper {
         return pictureArr
     }
     
-    private func saveImages() {
+    private func saveImageInfo() {
         let propertyListEncoder = PropertyListEncoder()
         do {
             let encodedData = try propertyListEncoder.encode(pictureArr)
@@ -101,6 +101,7 @@ class FileManagerHelper {
     //THIS IS ONLY FOR THE ABOVE METHOD
     private func documentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        //print(paths[0])
         return paths[0]
     }
 }

@@ -15,6 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        FileManagerHelper.manager.loadImages()
+        
+        //creating view controllers
         let tabViewController = UITabBarController()
         let weatherVC = WeatherViewController()
         let NavController = UINavigationController(rootViewController: weatherVC)

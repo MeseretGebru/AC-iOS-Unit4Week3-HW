@@ -42,6 +42,6 @@ struct Pictures: Codable {
 }
 
 struct Favorite: Codable {
-    var cityName: String?
-    let pictureName: String?
+    var cityName: String
+    let pictureName: String
 }

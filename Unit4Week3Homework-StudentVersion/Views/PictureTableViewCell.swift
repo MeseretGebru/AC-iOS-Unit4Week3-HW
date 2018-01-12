@@ -9,16 +9,30 @@
 import UIKit
 
 class PictureTableViewCell: UITableViewCell {
+    
+    lazy var cityImage: UIImageView = {
+        let cityImage = UIImageView()
+        cityImage.contentMode = .scaleAspectFill
+        return cityImage
+    }()
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .white
+        setupCityView()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
+    private func setupCityView() {
+        contentView.addSubview(cityImage)
+        cityImage.translatesAutoresizingMaskIntoConstraints = false
+        cityImage.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        cityImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        cityImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        cityImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+    }
+    
 }
